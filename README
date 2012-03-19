@@ -1,0 +1,36 @@
+Setup instructions:
+
+Install apache2 and the following packages
+
+ii  zip                                  2.32-1                     Archiver for .zip files
+ii  p7zip                                9.04~dfsg.1-1              7zr file archiver with high compression ratio
+ii  p7zip-full                           9.04~dfsg.1-1              7z and 7za file archivers with high compression ratio
+
+ii  libapache2-mod-php5                  5.2.12-0.dotdeb.1          server-side, HTML-embedded scripting language (Apache 2
+ii  php-apc                              3.0.19-2                   APC (Alternative PHP Cache) module for PHP 5
+ii  php-pear                             5.2.11-0.dotdeb.1          PEAR - PHP Extension and Application Repository
+ii  php5                                 5.2.11-0.dotdeb.1          server-side, HTML-embedded scripting language (metapack
+ii  php5-cli                             5.2.12-0.dotdeb.1          command-line interpreter for the php5 scripting languag
+ii  php5-common                          5.2.12-0.dotdeb.1          Common files for packages built from the php5 source
+ii  php5-curl                            5.2.12-0.dotdeb.1          CURL module for php5
+ii  php5-dev                             5.2.11-0.dotdeb.1          Files for PHP5 module development
+ii  php5-gd                              5.2.12-0.dotdeb.1          GD module for php5
+ii  php5-memcache                        5.2.12-0.dotdeb.1          memcache module for php5
+ii  php5-mysql                           5.2.12-0.dotdeb.1          MySQL module for php5
+
+Place browser_config.xml into the directory /etc/agile
+
+Extract the contents of agile_browser into your site root dir or where ever you would like it served from.
+
+Troubleshooting:
+
+Note: Unless needed for logging / debugging PHP.ini should be set to ignore NOTICE level warnings.
+
+Permission issues
+* Make sure your uploads directory ie /var/www/agile_browser/uploads/ has the proper permissions.  user/group www-data should have full read, write and delete permissions.
+* Agile browser performs some operations (like zipping and deleting local temporary files) which require "safe mode" to be turned off.  By default it should be.
+
+Upload issues
+*Agile browser supports uploads of files up to 1gig in size.  Your PHP.ini file will need to be updated to support this functionality as well.
+
+
