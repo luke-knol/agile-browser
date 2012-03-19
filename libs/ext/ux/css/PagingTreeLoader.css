@@ -1,0 +1,41 @@
+.x-tree-paging-toolbar .x-btn-left {
+    background: none repeat scroll 0 0 transparent;
+    height: 16px;
+}
+.x-tree-paging-toolbar .x-btn-right {
+    background: none repeat scroll 0 0 transparent;
+    height: 16px;
+}
+.x-tree-paging-toolbar .x-btn-center {
+    background: none repeat scroll 0 0 transparent;
+    height: 16px;
+    padding: 0;
+}
+.tbar-page-spacer-first {
+    padding-left: 10px !important;
+    padding-right: 5px !important;
+}
+.tbar-page-spacer {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+.x-tree-paging-btn-icon .x-btn-center .x-btn-text {
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 12px;
+    padding: 0;
+    white-space: nowrap;
+    width: 9px;
+}
+.x-tree-paging-nowrap {
+    white-space: nowrap;
+}
+.x-tree-paging-float {
+    float: left;
+    white-space: nowrap;
+}
+.x-tree-paging-inline {
+    display: inline;
+    white-space: nowrap;
+}

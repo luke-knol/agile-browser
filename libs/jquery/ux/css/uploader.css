@@ -1,0 +1,98 @@
+
+
+
+/*-------------------------
+ Dropbox Element
+ --------------------------*/
+#dropbox {
+    /*background: url('../img/background_tile_3.jpg') !important;*/
+	background-color: #ddd;
+    border-radius: 3px;
+    position: relative;
+    min-height: 290px;
+    overflow: hidden;
+}
+
+#dropbox .message {
+    font-size: 11px !important;
+    text-align: center !important;
+    padding-top: 160px !important;
+    display: block !important;
+}
+
+#dropbox .message i {
+    color: #ccc !important;
+    font-size: 10px !important;
+}
+
+#dropbox:before {
+    border-radius: 3px 3px 0 0 !important;
+}
+
+/*-------------------------
+ Image Previews
+ --------------------------*/
+#dropbox .preview {
+    width: 122px;
+    height: 107px;
+    float: left;
+    margin: 10px 0 0 10px;
+    position: relative;
+    text-align: center;
+}
+
+#dropbox .preview img {
+    max-width: 120px;
+    max-height: 90px;
+    border: 2px solid #fff;
+    display: block;    
+}
+
+#dropbox .imageHolder {
+    display: inline-block;
+    position: relative;
+}
+
+#dropbox .uploaded {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: url('../img/done.png') no-repeat center center rgba(255, 255, 255, 0.5);
+    display: none;
+}
+
+#dropbox .preview.done .uploaded {
+    display: block;
+}
+
+/*-------------------------
+ Progress Bars
+ --------------------------*/
+#dropbox .progressHolder {
+    position: absolute;
+    background-color: #252f38;
+    height: 8px;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    box-shadow: 0 0 2px #000;
+}
+
+#dropbox .progress {
+    background-color: #2586d0;
+    position: absolute;
+    height: 100%;
+    left: 0;
+    width: 0;
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    -moz-transition: 0.25s;
+    -webkit-transition: 0.25s;
+    -o-transition: 0.25s;
+    transition: 0.25s;
+}
+
+#dropbox .preview.done .progress {
+    width: 100% !important;
+}

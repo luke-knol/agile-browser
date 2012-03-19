@@ -1,0 +1,8 @@
+#Tue Oct 25 12:27:29 MST 2011
+=\=\=\=\=\=\=
+<<<<<<<=HEAD\:classes/.settings/org.eclipse.php.core.prefs
+>>>>>>>=master\:classes/.settings/org.eclipse.php.core.prefs
+eclipse.preferences.version=1
+include_path=0;/lamafs.luke.vm
+phpVersion=php5.3
+use_asp_tags_as_php=false
