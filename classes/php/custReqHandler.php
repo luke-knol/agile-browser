@@ -295,23 +295,17 @@ class ReqHandler{
 					echo json_encode($response);
 					return;
 		}
-		switch($action){
-			case 'find':
-				$ldap = new LDAP_ED();
-				$filter = $_REQUEST['query'];
-				$searchAllUsers = true;
-				$result = $ldap->SearchForEmail($filter, $searchAllUsers);
-				echo json_encode(array("totalCount"=>count($result), "data"=>$result));
-				break;
+		switch($action){							
 			case 'send':
 				$to = $_REQUEST['emailAddr'];
+				$from = $_REQUEST['from'];
 				$msg = isset($_REQUEST['msgBody']) ? stripcslashes($_REQUEST['msgBody']) : '';
 				$mapperUrl = stripcslashes($_REQUEST['mapperUrl']);
 				$tinyUrl = $_REQUEST['tinyUrl'];
 				$fileName = stripcslashes($_REQUEST['fileName']);
 				$linkPick = $_REQUEST['rbShare'];
 				$mail = new SendMail();
-				$resp = $mail->Send($to, $fileName, $msg, $mapperUrl, $tinyUrl, $linkPick);
+				$resp = $mail->Send($to, $from, $fileName, $msg, $mapperUrl, $tinyUrl, $linkPick);
 				echo json_encode($resp);
 				break;
 		}

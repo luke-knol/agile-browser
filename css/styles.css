@@ -7,18 +7,51 @@ body {
     margin: 0;
 }
 
-a {
-    color: #F78E18;
+.agile-label {
+	/*set header and footer font color*/
+	/*matching green*/	
+    color: #d0eb17; 
+	/*matching blue*/
+	/*color: #4ea2dd;*/
+	/*matching gray*/
+	/*color: #dddddd;*/
+    font: Arial, Helvetica, sans-serif;
 }
 
-a:hover {
-    text-decoration: none;
+#upload-help {
+    margin-top: 40px;
+	/*optional upload images*/
+    background-image: url(../resources/images/uploadhelp_green.png);
+    /*background-image: url(../resources/images/uploadhelp_blue.png);*/
+    /*background-image: url(../resources/images/uploadhelp_gray.png);*/
+    font-size: 12px;
+    font-weight: 100;
+    background-repeat: no-repeat;
+    background-color: transparent;
 }
 
+.logo {
+	/*replace with your logo, ideal dimensions 300x100, transparent background*/
+    background: url(../resources/images/cloud_service_logo.png);
+    position: absolute;
+    right: 20px;
+    background-size: 300px 100px;
+    background-repeat: no-repeat;
+    padding-top: 5px;
+    height: 100px;
+    width: 300px;
+    float: right;
+}
 
-#header {
-    /*background-image: url(../images/systems800_head.jpg);*/
-    background-image: url(../resources/images/llnw_banner_alt.png);
+.fileupload-content .ui-progressbar-value {
+	/*optional prgress bar colors*/
+    background: url(../libs/jquery/ux/css/bigprogress_green.gif);
+	/*background: url(../libs/jquery/ux/css/bigprogress_blue.gif);*/
+	/*background: url(../libs/jquery/ux/css/bigprogress_gray.gif);*/
+}
+
+.header {    
+    background-image: url(../resources/images/banner.png);
     background-position: right;
     background-repeat: no-repeat;
     background-color: #666;
@@ -28,6 +61,14 @@ a:hover {
     margin: 0;
     text-align: right;
     vertical-align: baseline;
+}
+
+a {
+    color: #F78E18;
+}
+
+a:hover {
+    text-decoration: none;
 }
 
 #header h1 {
@@ -422,6 +463,10 @@ input.formInput {
 
 .x-progress-wrap.custom {
     height: 18px !impportant;
+
+
+
+
 
 
 

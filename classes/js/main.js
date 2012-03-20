@@ -32,15 +32,15 @@ function main(){
     //longer ajax timeout
     setAjaxTimeout(1800000, true);
     
-	
-	//references js "classes" not really classes just used for organization
-    fileSystem = new FileSystem();    
-    uploader = new Uploader();    
+    
+    //references js "classes" not really classes just used for organization
+    fileSystem = new FileSystem();
+    uploader = new Uploader();
     directory = new Directory();
     Ext.QuickTips.init();
     
     //warns user if they have firebug open
-	//feel free to leave firebug running for testing but will cause browser to hang on large uploads (>100mb)
+    //feel free to leave firebug running for testing but will cause browser to hang on large uploads (>100mb)
     if (window.console && (window.console.firebug || window.console.exception)) {
         Ext.Msg.alert('Warning', 'Having Firebug enabled will significantly reduce site performance.');
     }
@@ -81,9 +81,9 @@ function main(){
             border: false,
             xtype: 'panel',
             autoWidth: true,
-			id: 'currentUserLabelPanelTxt',
+            id: 'currentUserLabelPanelTxt',
             bodyStyle: 'background-color: transparent; text-align: left; padding: 1px',
-            html: '<label style="color: #ccc;">Welcome:&nbsp</label><label style="color: #d0eb17;">' + currentUser + '</label>'
+            html: '<label style="color: #ccc;">Welcome:&nbsp</label><label class="agile-label">' + currentUser + '</label>'
         }, {
             xtype: 'spacer',
             width: 5
@@ -233,16 +233,15 @@ function main(){
                         width: 300,
                         layout: 'fit',
                         border: false,
-                        bodyStyle: 'background-image: url(resources/images/uploadhelp.png); background-repeat:no-repeat; background-color: transparent'
+						id: 'upload-help',		
+						preventBodyReset: true,				
+						html: '<div style="padding-top: 160px; padding-left: 12px" class="agile-label">firefox 4+, safari5+, & chrome</div>',
+                        bodyStyle: 'background-color: transparent'
                     }]
                 }]
             }]
         })]
     });
     
-
+    
 }
-
-
-
-

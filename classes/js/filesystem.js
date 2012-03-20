@@ -36,21 +36,6 @@ var FileSystem = function(){
         }]
     });
     	
-    this.userStore = new Ext.data.Store({
-        proxy: new Ext.data.HttpProxy({
-            url: 'classes/php/custReqHandler.php?object=email&action=find'
-        }),
-        reader: new Ext.data.JsonReader({
-            root: 'data',
-            totalProperty: 'totalCount'
-        }, [{
-            name: 'cn',
-            mapping: 'cn'
-        }, {
-            name: 'uid',
-            mapping: 'uid'
-        }])
-    });
     
 	//tracks the current path.. would like to remove this and replace with a function call or something
     this.CurrentPath = '/';
@@ -803,22 +788,21 @@ var FileSystem = function(){
                             xtype: 'fieldset',
                             title: 'Send Email',
                             items: [{
-                                xtype: 'combo',
-                                store: fs.userStore,
-                                displayField: 'uid',
-                                fieldLabel: 'To',
-                                typeAhead: false,
-                                loadingText: 'Searching...',
+                                xtype: 'textfield',                                                                
+                                fieldLabel: 'To',                                
                                 name: 'emailAddr',
                                 width: 380,
                                 allowBlank: false,
                                 vtype: 'email',
-                                vtypeText: 'Please enter a valid email address',
-                                minChars: 2,
-                                pageSize: 10,
-                                hideTrigger: true,
-                                tpl: new Ext.XTemplate('<tpl for="."><div class="search-item">', '<h3>{cn}</h3>', '{uid}', '</div></tpl>'),
-                                itemSelector: 'div.search-item'
+                                vtypeText: 'Please enter a valid email address'                                
+                            }, {
+								xtype: 'textfield',
+                                fieldLabel: 'From',
+                                width: 380,
+                                name: 'from',
+								allowBlank: false,
+                                vtype: 'email',
+                                emptyText: 'Your valid email address'                                
                             }, {
                                 fieldLabel: 'Message',
                                 width: 380,
@@ -866,7 +850,7 @@ var FileSystem = function(){
                                                     title: 'Success',
                                                     padding: 20,
                                                     shadow: false,
-                                                    html: "<div>Email sent. You have been bcc'd a copy of the message.<div>",
+                                                    html: "<div>Email sent.<div>",
                                                     listeners: {
                                                         afterrender: function(thisWindow){
                                                             var win = thisWindow.getEl();
@@ -880,7 +864,7 @@ var FileSystem = function(){
                                                 }).show();
                                             },
                                             failure: function(){
-                                                Ext.Msg.alert('Error', 'Email failed to send.  Please report this issue to lknol@llnw.com');
+                                                Ext.Msg.alert('Error', 'Email failed to send.  Please report this issue.');
                                             }
                                         });
                                     }

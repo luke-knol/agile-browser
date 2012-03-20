@@ -61,10 +61,6 @@
   height: 20px;
 }
 
-.fileupload-content .ui-progressbar-value {
-  background: url(bigprogress-bar.gif);
-}
-
 .fileupload-content .fileupload-progressbar {
   width: 300px;
   margin: 10px 0;
