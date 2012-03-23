@@ -25,28 +25,6 @@ class FileSystem{
 		}
 	}
 
-	public function ListDataCenters(){
-		try{
-			$pops = $this->lamaAPI->listPops();
-			$moddedPops = array();
-			$names = array_shift($pops);
-			foreach($pops as $pop){
-				$moddedPop = array();
-				foreach($names as $index => $name){
-					$moddedPop[$name] = $pop[$index];
-				}
-				array_push($moddedPops, $moddedPop);
-			}
-			return $moddedPops;
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => "Error retrieving list: ".$e->getMessage()
-			);
-			return $response;
-		}
-	}
 
 	//public Methods
 	public function CreateDirectory($gid, $name, $path, $policyID=null){
@@ -86,33 +64,6 @@ class FileSystem{
 		}
 	}
 
-	public function UpdatePolicyLinks($gid, $policyID, $paths, $link=true){
-		try{
-			if($link){
-				$link = false;
-			}
-			else{
-				$link = true;
-			}
-			$response = $this->lamaAPI->linkPolicyDirectory($gid, $policyID, $paths, $link);
-			if($response < 0){
-				throw new Exception('Policy or directory missing');
-			}
-
-			$response = array(
-					"success" => true,
-					"data" => "Link updated"
-					);
-					return $response;
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => "Error linking directory: ".$e->getMessage()
-			);
-			return $response;
-		}
-	}
 
 	public function ListDirectories($path, $dirID, $limit=50, $cookie=null){
 		try{
@@ -243,7 +194,7 @@ class FileSystem{
 	public function GetFile($gid, $path=null, $fileID=null){
 		try{
 			$moddedFile = array();
-			$path = '/llnw/staff/'.$_SESSION['username'].$path;
+			$path = $_SESSION['pathprefix'].$path;
 			$path = str_replace("%2F", "/", rawurlencode($path));
 			$file = $this->lamaAPI->getFile(null, $gid, $path, $fileID);
 			if(is_null($file)){
@@ -263,7 +214,7 @@ class FileSystem{
 	}
 
 	public function GetMapperUrl($path){
-		$path = '/llnw/staff/'.$_SESSION['username'].$path;
+		$path = $_SESSION['pathprefix'].$path;
 		$path = str_replace("%2F", "/", rawurlencode($path));
 		$path = 'http://global.mt.lldns.net'.$path;
 		$response = array(
@@ -273,8 +224,8 @@ class FileSystem{
 		return $response;
 	}
 
-	public function GetShareUrls($path, $fileName){
-		$path = '/llnw/staff/'.$_SESSION['username'].$path;
+	public function GetShareUrls($path, $fileName){		
+		$path = $_SESSION['pathprefix'].$path;
 		$path = str_replace("%2F", "/", rawurlencode($path));
 		$mapperUrl = 'http://global.mt.lldns.net'.$path;
 		$shareUrls = array();
@@ -380,7 +331,7 @@ class FileSystem{
 				if($path == '/'){
 					$path = '';
 				}
-				$filePath = '/llnw/staff/'.$_SESSION['username'].$path.'/'.$file['name'];
+				$filePath = $_SESSION['pathprefix'].$path.'/'.$file['name'];
 				$filePath = str_replace("%2F", "/", rawurlencode($filePath));
 				$moddedFile['mapperUrl'] = 'http://global.mt.lldns.net'.$filePath;
 				$moddedFile['text'] = $file['name'];
@@ -639,99 +590,6 @@ class FileSystem{
 		}
 	}
 
-	public function ListPolicyPops($policy){
-		try{
-			$bricks = $this->lamaAPI->listPolicyBricks($policy, true);
-			$metaData = array_shift($bricks);
-			$names = $metaData['columns'];
-			$dataCenters = array();
-			foreach($bricks as $brick){
-				foreach($names as $index => $name){
-					if($name == 'dataCenter'){
-						$dataCenters[$brick[$index]] = true;
-					}
-				}
-			}
-			$moddedDataCenters = array();
-			foreach($dataCenters as $index => $name){
-				array_push($moddedDataCenters, array("dataCenter" => $index));
-			}
-			return $moddedDataCenters;
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => "Error retrieving datacenters: ".$e->getMessage()
-			);
-			return $response;
-		}
-	}
-
-	public function ListPolicies(){
-		try{
-			$policies = $this->lamaAPI->listPolicies('.');
-			$moddedPolicies = array();
-			$publicIDs = array(26, 49, 23, 20);
-			$names = array_shift($policies);
-			foreach($policies as $policy){
-				$publicPolicy = false;
-				$moddedPolicy = array();
-				foreach($names as $index => $name){
-					$moddedPolicy[$name] = $policy[$index];
-					if($name == 'pid'){
-						if(in_array($policy[$index], $publicIDs)){
-							$publicPolicy = true;
-						}
-					}
-					if($publicPolicy){
-						if($name == 'name' || $name == 'description'){
-							$moddedPolicy[$name] = $policy[$index];
-						}
-					}
-				}
-				if($publicPolicy){
-					//$moddedPolicy['description'] = $moddedPolicy['name'].': '.$moddedPolicy['description'];
-					array_push($moddedPolicies, $moddedPolicy);
-				}
-			}
-			return $moddedPolicies;
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => "Error retrieving list: ".$e->getMessage()
-			);
-			return $response;
-		}
-	}
-
-	public function UpdateDirectoryLinks($policyName, $path, $link=true){
-		try{
-			if($link){
-				$link = false;
-			}
-			else{
-				$link = true;
-			}
-			$response = $this->lamaAPI->linkPolicyDirectory($policyName, array($path), $link);
-			if($response < 0){
-				throw new Exception('Policy or directory missing');
-			}
-
-			$response = array(
-					"success" => true,
-					"data" => "Link updated"
-					);
-					return $response;
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => "Error linking directory: ".$e->getMessage()
-			);
-			return $response;
-		}
-	}
 
 	private function rrmdir($dir){
 		if (is_dir($dir)) {
@@ -747,29 +605,6 @@ class FileSystem{
 	}
 
 
-	public function GetFilePops($path, $fileID=null){
-		try{
-			$path = '/llnw/staff/'.$_SESSION['username'].$path;
-			$pops = $this->lamaAPI->getFileDataCenters($path, $fileID);
-			$moddedPops = array();
-			$names = array_shift($pops);
-			foreach($pops as $pop){
-				$moddedBrick = array();
-				foreach($names as $index => $name){
-					$moddedPop[$name] = $pop[$index];
-				}
-				array_push($moddedPops, $moddedPop);
-			}
-			return $moddedPops;
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => "Error retrieving list: ".$e->getMessage()
-			);
-			return $response;
-		}
-	}
 
 	public function Rename($oldpath, $newpath) {
 		try {

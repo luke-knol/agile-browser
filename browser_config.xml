@@ -1,7 +1,6 @@
 <agile>
         <service>
-		 <uploadAPI>https://llp-07.phx2.lldns.net</uploadAPI>
+         <uploadAPI>https://llp-07.phx2.lldns.net</uploadAPI>
+         <pathPrefix>/llnw/staff/%username</pathPrefix>
         </service>
 </agile>
-
-

@@ -34,10 +34,10 @@ body {
 	/*replace with your logo, ideal dimensions 300x100, transparent background*/
     background: url(../resources/images/cloud_service_logo.png);
     position: absolute;
-    right: 20px;
+    right: 0px;
     background-size: 300px 100px;
     background-repeat: no-repeat;
-    padding-top: 5px;
+    padding-top: 0px;
     height: 100px;
     width: 300px;
     float: right;

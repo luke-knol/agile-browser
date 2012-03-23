@@ -52,11 +52,20 @@ class Auth
 {
 	private $uploadAPI;
 	private $uploadURI;
+	private $pathPrefix;
 
 	public function Login($username, $password){
 		$obj = simplexml_load_file('/etc/agile/browser_config.xml');
 		$uploadUriNodes = $obj->xpath('/agile/service/uploadAPI');
+		$pathPrefixNode = $obj->xpath('/agile/service/pathPrefix');
 		$this->uploadURI = (string)$uploadUriNodes[0][0];
+		$this->pathPrefix = (string)$pathPrefixNode[0][0];		
+		if(strpos($this->pathPrefix,'%username') >= 0){
+			$this->pathPrefix = str_replace('%username', $username, $this->pathPrefix);
+		}
+		if(substr($this->pathPrefix, -1) == '/'){
+			$this->pathPrefix = rtrim($this->pathPrefix, '/');
+		}		
 		$this->uploadAPI = new UploadAPI($this->uploadURI);
 		$r = $this->uploadAPI->login($username, $password);
 		return $r;
@@ -69,6 +78,10 @@ class Auth
 
 	public function GetUploadURI(){
 		return $this->uploadURI;
+	}
+	
+	public function GetPathPrefix(){
+		return $this->pathPrefix;
 	}
 }
 

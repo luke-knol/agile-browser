@@ -18,7 +18,29 @@ ii  php5-gd                              5.2.12-0.dotdeb.1          GD module fo
 ii  php5-memcache                        5.2.12-0.dotdeb.1          memcache module for php5
 ii  php5-mysql                           5.2.12-0.dotdeb.1          MySQL module for php5
 
-Place browser_config.xml into the directory /etc/agile
+Configuration:
+
+Inspect browser_config.xml located in the root dir.
+The pathPrefix tag indicates what the root directory should be for the targeted Agile customer users.
+if %username is left in the path string it will be replaced with the username of the authenticating user.
+This value needs to be properly set for the egress functions with the browser to work (preview file, download file, share links);
+It has no impact on what files will be visible to authenticate users, or on uploaded content!
+
+Example use-case:
+
+Agile customer "internetplus" would like to use agile browser.  
+
+If all users of internetplus have access to the root directory of the customer directory structure the pathPrefix tag would look like this:
+<pathPrefix>/internetplus</pathPrefix>
+
+If however each user account has their own root directory then the pathPrefix tag would look like this:
+
+<pathPrefix>/internetplus/%username</pathPrefix>
+
+In this instance if user "bob" logs in his pathPrefix within the system will be set to /internetplus/bob
+
+Once the config file has been properly modified
+Move browser_config.xml into the directory /etc/agile
 
 CSS / Branding information
 

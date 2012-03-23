@@ -16,6 +16,7 @@ class LAMA_API
 		$_SESSION['uploadUri'] = $auth->GetUploadURI();
 		$_SESSION['uploadAPI'] = self::$uploadAPI;
 		$_SESSION['username'] = $username;
+		$_SESSION['pathprefix'] = $auth->GetPathPrefix();
 		$_SESSION['agileuserpass'] = $password;
 		return $r;
 	}
