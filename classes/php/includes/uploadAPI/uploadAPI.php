@@ -29,14 +29,13 @@ class UploadAPI {
 			return 0;
 		}
 
-		$r = $this->client->login($this->userid, $this->passwd);		
+		$r = $this->client->login($this->userid, $this->passwd);
 		$this->token = $r[0];
 		$_SESSION['uploadToken'] = $r[0];
 		$this->user = $r[1];
 
-		if (empty($this->user)){
-			return -1;
-		}
+		if (empty($this->user))
+		return -1;
 			
 		$this->expiration = time() + 3600;
 		$_SESSION['uploadExpiration'] = time() + 3600;
@@ -187,43 +186,55 @@ class UploadAPI {
 		return $this->client->listCallback($this->token);
 	}
 
+	var $responseCode;
+	
+	function readHeader($ch, $header){		
+		if(strstr($header, 'X-Llnw-Status:')){			
+			$headersplit = explode(":", $header);
+			$this->responseCode = trim($headersplit[1]);
+			error_log('** UPLOAD POST RESPONSE: '. trim($header).' **');
+		}
+		return(strlen($header));
+	}
+
 	function postFile($filepath, $filename, $directory, $mimetype) {
-		
+
 		if ($directory == '/'){
 			$directory = '';
 		}
 
 		if ($this->plogin() != 0)
-			throw new Exception(INVALIDLOGIN);
-
-
-		$postUri = $_SESSION['uploadUri'].':8080/post/file';
-		$headers = array("X-LLNW-Authorization: ".(string)$this->token, "X-Content-Type: ".$mimetype);		
+		throw new Exception(INVALIDLOGIN);
+		
+		$postUri = $this->uri.':8080/post/file';
+		$headers = array("X-Agile-Authorization: ".(string)$this->token, "X-Content-Type: ".$mimetype);
 		$fields = array(
 						"uploadFile" => "@".$filepath,
 						"directory" => $directory . '/',
 						"basename" => $filename,
 						"mtime" => (string)time()
 		);
-
+		
+		error_log('** POSTING FILE: '. $filename.' **');
+		
 		$postUri = str_replace("https://", "http://", $postUri);
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this,'readHeader'));
 		curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+		curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
 		curl_setopt($ch, CURLOPT_URL, $postUri);
-
 		$result = curl_exec($ch);
 		curl_close($ch);
-		if($result == 1){
-			unlink($filepath);
-			return 0;
-		}
-		else{						
-			return -1;
-		}
+				
+
+		if($this->responseCode == 0){			
+			unlink($filepath);		
+		}						
+		return $this->responseCode;
 	}
 }
 

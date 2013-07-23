@@ -4,7 +4,6 @@ if ($_SERVER["SERVER_PORT"] == "80") {
 }
 require('smarty/smarty_ext_template.php');
 $smarty = new Smarty_Ext();
-$smarty->assign('title', 'Agile Browser Login');
 $smarty->display('ext_header.tpl');
 $ref = 'https://'.$_SERVER["SERVER_NAME"].$_REQUEST['path'].'/';
 $user = $_REQUEST['user'];

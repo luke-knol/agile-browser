@@ -1,4 +1,5 @@
 <?php
+require_once('util/getid3/getid3.php');
 class FileSystem{
 
 	private $uploadAPI;
@@ -27,19 +28,20 @@ class FileSystem{
 
 
 	//public Methods
-	public function CreateDirectory($gid, $name, $path, $policyID=null){
+	public function CreateDirectory($gid, $name, $path){
 		try{
 			$path = $path . '/' . $name;
 			$result = $this->uploadAPI->makeDir($path, $limit, $cookie, 1);
 			$attempt = 0;
-			$allowedAttempts = 3;
+			$allowedAttempts = 9;
 			if ($result == 0) {
 				$response = array(
 						"success" => true,
 						"data" => "Directory created"
-						);
-						return $response;
+				);
+				return $response;
 			}
+
 			switch($result) {
 				case -1:
 					throw new Exception('malformed path');
@@ -78,12 +80,15 @@ class FileSystem{
 			$code = $result['code'];
 
 			if ($code != 0)
-			return $moddedDirectories;
+				return $moddedDirectories;
 
 			foreach($directories as $directory){
 				$moddedDirectory = array();
-				$moddedDirectory['name'] = $directory['name'];
-				$moddedDirectory['text'] = $directory['name'];
+				//$moddedDirectory['name'] = $directory['name'];
+				$directoryName = mb_check_encoding($directory['name'], 'UTF-8') ? mb_convert_encoding($directory['name'], 'auto', 'UTF-8') : $directory['name'];
+				$moddedDirectory['name'] = $directoryName;
+				//$moddedDirectory['text'] = $directory['name'];
+				$moddedDirectory['text'] = $directoryName;
 				$moddedDirectory['code'] = $directory['code'];
 
 				$stat = $directory['stat'];
@@ -122,7 +127,7 @@ class FileSystem{
 	public function DeleteDirectory($path){
 
 		if ($recursive)
-		return $this->deleteObject($path, 1);
+			return $this->deleteObject($path, 1);
 
 		try {
 			$result = $this->uploadAPI->deleteDir($path);
@@ -131,8 +136,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "Directory deleted"
-						);
-						return $response;
+				);
+				return $response;
 			}
 			else{
 				$msg = 'Directory must be empty';
@@ -145,8 +150,8 @@ class FileSystem{
 						break;
 				}
 				$response = array(
-					"success" => false,
-					"data" => "Error deleting directory: ".$msg
+						"success" => false,
+						"data" => "Error deleting directory: ".$msg
 				);
 				return $response;
 
@@ -171,8 +176,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "Object deleted"
-						);
-						return $response;
+				);
+				return $response;
 			}
 
 			switch($result) {
@@ -191,40 +196,19 @@ class FileSystem{
 		}
 	}
 
-	public function GetFile($gid, $path=null, $fileID=null){
-		try{
-			$moddedFile = array();
-			$path = $_SESSION['pathprefix'].$path;
-			$path = str_replace("%2F", "/", rawurlencode($path));
-			$file = $this->lamaAPI->getFile(null, $gid, $path, $fileID);
-			if(is_null($file)){
-				return array();
-			}
-			else{
-				return array($file);
-			}
-		}
-		catch(Exception $e){
-			$response = array(
-					"success" => false,
-					"data" => $e->getMessage()
-			);
-			return $response;
-		}
-	}
 
 	public function GetMapperUrl($path){
 		$path = $_SESSION['pathprefix'].$path;
 		$path = str_replace("%2F", "/", rawurlencode($path));
 		$path = 'http://global.mt.lldns.net'.$path;
 		$response = array(
-					"success" => true,
-					"data" => array("mapperUrl" => $path)
+				"success" => true,
+				"data" => array("mapperUrl" => $path)
 		);
 		return $response;
 	}
 
-	public function GetShareUrls($path, $fileName){		
+	public function GetShareUrls($path, $fileName){
 		$path = $_SESSION['pathprefix'].$path;
 		$path = str_replace("%2F", "/", rawurlencode($path));
 		$mapperUrl = 'http://global.mt.lldns.net'.$path;
@@ -247,6 +231,7 @@ class FileSystem{
 		}
 
 	}
+
 
 	private function get_tiny_url($url)  {
 		$ch = curl_init();
@@ -285,26 +270,24 @@ class FileSystem{
 		$encodedFiles = array_reverse($encodedFiles);
 
 		$m3u = "#EXTM3U\n";
-		$savePath = $_SESSION['envPrefix'].'uploads/'.$_SESSION['username'].$path.'/';
-		if(!is_dir($savePath)){			
-			mkdir($savePath, 0777, 1);
-		}
+		$savePath = $_SESSION['envPrefix'].'uploads/'.$_SESSION['lamafsuser'].$path.'/';
 		$handle = fopen($savePath."playlist.m3u", 'w');
 		$playlist = join("\n", $encodedFiles);
 		fwrite($handle, $playlist);
 		$u_path = $path."/playlist.m3u";
-		$u_uri = $_SESSION['envPrefix'].'uploads/'.$_SESSION['username'].$path."/playlist.m3u";
+		$u_uri = dirname(__FILE__) .'/../../../uploads/'.$_SESSION['lamafsuser'].$path."/playlist.m3u";
 
-		$result = $this->uploadAPI->postFile($u_uri, 'playlist.m3u', $path, 'audio/x-mpequrl');
+		$result = $this->uploadAPI->postFile($u_uri, 'playlist.m3u', $path);
 
 		$response = array(
-			"success" => false,
-			"data" => -1
+				"success" => false,
+				"data" => -1
 		);
-		if($result == 0){			
+		if($result == 0){
+			unlink($u_uri);
 			$response = array(
-			"success" => true,
-			"data" => 0
+					"success" => true,
+					"data" => 0
 			);
 		}
 		return $response;
@@ -318,6 +301,7 @@ class FileSystem{
 
 			$moddedFiles = array();
 
+
 			$cookie = $result['cookie'];
 			$code = $result['code'];
 
@@ -325,13 +309,14 @@ class FileSystem{
 
 			foreach($files as $file){
 				$moddedFile = array();
-
-				$moddedFile['name'] = $file['name'];
+				$moddedFile['name'] = mb_check_encoding($file['name'], 'UTF-8') ? mb_convert_encoding($file['name'], 'auto', 'UTF-8') : $file['name'];
 				$filePath = '';
 				if($path == '/'){
 					$path = '';
 				}
+
 				$filePath = $_SESSION['pathprefix'].$path.'/'.$file['name'];
+				$filePath = mb_check_encoding($filePath, 'UTF-8') ? mb_convert_encoding($filePath, 'auto', 'UTF-8') : $filePath;
 				$filePath = str_replace("%2F", "/", rawurlencode($filePath));
 				$moddedFile['mapperUrl'] = 'http://global.mt.lldns.net'.$filePath;
 				$moddedFile['text'] = $file['name'];
@@ -379,8 +364,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "File deleted"
-						);
-						return $response;
+				);
+				return $response;
 			}
 
 			switch($result) {
@@ -405,8 +390,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "File moved"
-						);
-						return $response;
+				);
+				return $response;
 			}
 
 			switch($result) {
@@ -443,7 +428,6 @@ class FileSystem{
 				$result = $this->uploadAPI->rename($oldPath, $newPath);
 			}
 			else{
-				print $oldPath;
 				$result = $this->uploadAPI->copyFile($oldPath, $newPath);
 			}
 
@@ -493,8 +477,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "File renamed"
-						);
-						return $response;
+				);
+				return $response;
 			}
 
 			switch($result) {
@@ -522,9 +506,9 @@ class FileSystem{
 			if(!is_null($path)){
 				$escape = "'".'"'."'".'"'."'";
 				$password = str_replace("'", $escape, $password);
-				$zipDir = $_SESSION['envPrefix'].'uploads/' . $_SESSION['username'] . $path . $fileName;
-				$zippedFileDir = $_SESSION['envPrefix'].'uploads/' . $_SESSION['username'] . $path;
-				$zipName;
+				$zipDir = $_SESSION['envPrefix'].'uploads/' . $_SESSION['lamafsuser'] . $path . $fileName;
+				$zippedFileDir = $_SESSION['envPrefix'].'uploads/' . $_SESSION['lamafsuser'] . $path;
+				$zipName;				
 				if($type == '7z'){
 					$zipName = $zipDir.'.7z';
 					$command = escapeshellcmd('7z a -mx0 -mhe -y -p'.$password.' '.$zipName.' '.$zipDir);
@@ -559,21 +543,21 @@ class FileSystem{
 					$fileName = $fileName.'.zip';
 				}
 				$u_path = $destPath.'/'.$fileName;
-				$u_uri = $zippedFileDir.$fileName;
-
+				$u_uri = $zippedFileDir.$fileName;				
+				
 				$response = $this->uploadAPI->postFile($u_uri, $fileName, $destPath, 'application/zip');
 
 				$_SESSION['filePath'] = '';
 				if($response == 0){
 					$response = array(
-						"success" => true,
-						"data" => $u_path
+							"success" => true,
+							"data" => $u_path
 					);
 				}
 				else{
 					$response = array(
-						"success" => false,
-						"data" => $u_path
+							"success" => false,
+							"data" => $u_path
 					);
 				}
 
@@ -615,8 +599,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "Sucessfully renamed"
-						);
-						return $response;
+				);
+				return $response;
 			}
 
 			switch($result) {
@@ -650,8 +634,8 @@ class FileSystem{
 				$response = array(
 						"success" => true,
 						"data" => "File copied"
-						);
-						return $response;
+				);
+				return $response;
 			}
 
 			switch($result) {

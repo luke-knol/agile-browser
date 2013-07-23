@@ -1,16 +1,17 @@
 <?php
 include "classes/php/lamaApi.php";
+//include "classes/php/includes/uploadAPI/uploadAPI.php";
 session_start();
 /*
  * jQuery File Upload Plugin PHP Example 5.2.7
- * https://github.com/blueimp/jQuery-File-Upload
- *
- * Copyright 2010, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * http://creativecommons.org/licenses/MIT/
- */
+* https://github.com/blueimp/jQuery-File-Upload
+*
+* Copyright 2010, Sebastian Tschan
+* https://blueimp.net
+*
+* Licensed under the MIT license:
+* http://creativecommons.org/licenses/MIT/
+*/
 error_reporting(E_ALL | E_STRICT);
 
 class UploadHandler
@@ -25,51 +26,51 @@ class UploadHandler
 			$this->filePath = '';
 		}
 
-		$uploadDir = dirname(__FILE__) . '/uploads/' . $_SESSION['username'] . $this->filePath . '/';
+		$uploadDir = dirname(__FILE__) . '/uploads/' . $_SESSION['lamafsuser'] . $this->filePath . '/';
 
 		if(!is_dir($uploadDir)){
 			mkdir($uploadDir, 0777, 1);
 		}
 		$this->options = array(
-            'script_url' => $_SERVER['PHP_SELF'],
-            'upload_dir' => $uploadDir,
-            'upload_url' => dirname($_SERVER['PHP_SELF']).'/uploads/'. $_SESSION['username'] . $this->filePath.'/',
-            'param_name' => 'files',
-		// The php.ini settings upload_max_filesize and post_max_size
-		// take precedence over the following max_file_size setting:
-            'max_file_size' => 1024*1024*1024,
-            'min_file_size' => 1,
-            'accept_file_types' => '/.+$/i',
-            'max_number_of_files' => null,
-            'discard_aborted_uploads' => true,
-            'image_versions' => array(
-		// Uncomment the following version to restrict the size of
-		// uploaded images. You can also add additional versions with
-		// their own upload directories:
-		/*
+				'script_url' => $_SERVER['PHP_SELF'],
+				'upload_dir' => $uploadDir,
+				'upload_url' => dirname($_SERVER['PHP_SELF']).'/uploads/'. $_SESSION['lamafsuser'] . $this->filePath.'/',
+				'param_name' => 'files',
+				// The php.ini settings upload_max_filesize and post_max_size
+				// take precedence over the following max_file_size setting:
+				'max_file_size' => 1024*1024*1024,
+				'min_file_size' => 1,
+				'accept_file_types' => '/.+$/i',
+				'max_number_of_files' => null,
+				'discard_aborted_uploads' => true,
+				'image_versions' => array(
+						// Uncomment the following version to restrict the size of
+						// uploaded images. You can also add additional versions with
+						// their own upload directories:
+						/*
 		'large' => array(
-		'upload_dir' => dirname(__FILE__).'/files/',
-		'upload_url' => dirname($_SERVER['PHP_SELF']).'/files/',
-		'max_width' => 1920,
-		'max_height' => 1200
+				'upload_dir' => dirname(__FILE__).'/files/',
+				'upload_url' => dirname($_SERVER['PHP_SELF']).'/files/',
+				'max_width' => 1920,
+				'max_height' => 1200
 		),
 		*/
-		/*
-		 'thumbnail' => array(
-		 'upload_dir' => dirname(__FILE__).'/thumbnails/',
-		 'upload_url' => dirname($_SERVER['PHP_SELF']).'/thumbnails/',
-		 'max_width' => 80,
-		 'max_height' => 80
-		 )
-		 */
-		)
+						/*
+						 'thumbnail' => array(
+						 		'upload_dir' => dirname(__FILE__).'/thumbnails/',
+						 		'upload_url' => dirname($_SERVER['PHP_SELF']).'/thumbnails/',
+						 		'max_width' => 80,
+						 		'max_height' => 80
+						 )
+		*/
+				)
 		);
 		if ($options) {
 			$this->options = array_replace_recursive($this->options, $options);
 		}
 	}
 
-	private function get_file_object($file_name) {
+	private function get_file_object($file_name) {		
 		$file_path = $this->options['upload_dir'].$file_name;
 		if (is_file($file_path) && $file_name[0] !== '.') {
 			$file = new stdClass();
@@ -92,8 +93,8 @@ class UploadHandler
 
 	private function get_file_objects() {
 		return array_values(array_filter(array_map(
-		array($this, 'get_file_object'),
-		scandir($this->options['upload_dir'])
+				array($this, 'get_file_object'),
+				scandir($this->options['upload_dir'])
 		)));
 	}
 
@@ -105,8 +106,8 @@ class UploadHandler
 			return false;
 		}
 		$scale = min(
-		$options['max_width'] / $img_width,
-		$options['max_height'] / $img_height
+				$options['max_width'] / $img_width,
+				$options['max_height'] / $img_height
 		);
 		if ($scale > 1) {
 			$scale = 1;
@@ -136,13 +137,13 @@ class UploadHandler
 				$src_img = $image_method = null;
 		}
 		$success = $src_img && @imagecopyresampled(
-		$new_img,
-		$src_img,
-		0, 0, 0, 0,
-		$new_width,
-		$new_height,
-		$img_width,
-		$img_height
+				$new_img,
+				$src_img,
+				0, 0, 0, 0,
+				$new_width,
+				$new_height,
+				$img_width,
+				$img_height
 		) && $write_image($new_img, $new_file_path);
 		// Free up memory (imagedestroy does not delete files):
 		@imagedestroy($src_img);
@@ -163,29 +164,37 @@ class UploadHandler
 			$file_size = $_SERVER['CONTENT_LENGTH'];
 		}
 		if ($this->options['max_file_size'] && (
-		$file_size > $this->options['max_file_size'] ||
-		$file->size > $this->options['max_file_size'])
+				$file_size > $this->options['max_file_size'] ||
+				$file->size > $this->options['max_file_size'])
 		) {
 			return 'maxFileSize';
 		}
 		if ($this->options['min_file_size'] &&
-		$file_size < $this->options['min_file_size']) {
+				$file_size < $this->options['min_file_size']) {
 			return 'minFileSize';
 		}
 		if (is_int($this->options['max_number_of_files']) && (
-		count($this->get_file_objects()) >= $this->options['max_number_of_files'])
+				count($this->get_file_objects()) >= $this->options['max_number_of_files'])
 		) {
 			return 'maxNumberOfFiles';
 		}
 		return $error;
 	}
 
-	private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {		
+	private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
 		$file = new stdClass();
 		// Remove path information and dots around the filename, to prevent uploading
 		// into different directories or replacing hidden system files.
-		// Also remove control characters and spaces (\x00..\x20) around the filename:
-		$file->name = trim(basename(stripslashes($name)), ".\x00..\x20");
+		// Also remove control characters and spaces (\x00..\x20) around the filename:		
+
+		//temporary until API is updated
+		$name = mb_convert_encoding($name, 'auto', 'UTF-8');		
+		$name= iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+				
+		$name = trim(stripslashes($name), ".\x00..\x20");
+
+				
+		$file->name = $name;		
 		$file->size = intval($size);
 		$file->type = $type;
 		$error = $this->has_error($uploaded_file, $file, $error);
@@ -198,29 +207,34 @@ class UploadHandler
 				// multipart/formdata uploads (POST method uploads)
 				if ($append_file) {
 					file_put_contents(
-					$file_path,
-					fopen($uploaded_file, 'r'),
-					FILE_APPEND
+							$file_path,
+							fopen($uploaded_file, 'r'),
+							FILE_APPEND
 					);
 				} else {
 
+
 					move_uploaded_file($uploaded_file, $file_path);
 
-					//if the file is not a zip file post and delete on complete
-					if(!isset($_REQUEST['uploadMode'])){						
+					if(!isset($_REQUEST['uploadMode'])){
+
+
+						//$uploadAPI = $_SESSION['uploadAPI'];
 
 						$lama_api = new LAMA_API();
 						$uploadAPI = LAMA_API::$uploadAPI;
+
 						$u_filePath = $this->filePath;
 						if (strlen($u_filePath) >= 0){
 							$u_filePath .= "/";
 						}
 						$u_path = $this->filePath . '/' . $file->name;
-						$u_uri = 'uploads/' .
-						$_SESSION['username'] .
-						$u_filePath .$file->name;						
-
+						$u_uri = 'uploads/'.$_SESSION['lamafsuser'].$u_filePath .$file->name;						
 						$file->fetch_code = $uploadAPI->postFile($u_uri, $file->name, $this->filePath, $file->type);
+						if ($file->fetch_code != 0){
+							$file->error = 'Error posting file to API';
+						}
+
 					}
 					else{
 						$_SESSION['filePath'] = $_POST['destPath'];
@@ -229,12 +243,11 @@ class UploadHandler
 			} else {
 				// Non-multipart uploads (PUT method support)
 				file_put_contents(
-				$file_path,
-				fopen('php://input', 'r'),
-				$append_file ? FILE_APPEND : 0
+						$file_path,
+						fopen('php://input', 'r'),
+						$append_file ? FILE_APPEND : 0
 				);
 			}
-			//this conditional exists for small files which have already posted and been removed
 			if(file_exists($file_path)){
 				$file_size = filesize($file_path);
 				if ($file_size === $file->size) {
@@ -246,7 +259,7 @@ class UploadHandler
 						}
 					}
 				} else if ($this->options['discard_aborted_uploads']) {
-					unlink($file_path);
+					//unlink($file_path);
 					$file->error = 'abort';
 				}
 				$file->size = $file_size;
@@ -275,45 +288,47 @@ class UploadHandler
 	public function post() {
 		$upload = isset($_FILES[$this->options['param_name']]) ?
 		$_FILES[$this->options['param_name']] : array(
-                'tmp_name' => null,
-                'name' => null,
-                'size' => null,
-                'type' => null,
-                'error' => null
+				'tmp_name' => null,
+				'name' => null,
+				'size' => null,
+				'type' => null,
+				'error' => null
 		);
 		$info = array();
 		if (is_array($upload['tmp_name'])) {
 			foreach ($upload['tmp_name'] as $index => $value) {
 				$info[] = $this->handle_file_upload(
-				$upload['tmp_name'][$index],
-				isset($_SERVER['HTTP_X_FILE_NAME']) ?
-				$_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index],
-				isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-				$_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index],
-				isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-				$_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index],
-				$upload['error'][$index]
+						$upload['tmp_name'][$index],
+						isset($_SERVER['HTTP_X_FILE_NAME']) ?
+						$_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index],
+						isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+						$_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index],
+						isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+						$_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index],
+						$upload['error'][$index]
 				);
 			}
 		} else {
 			$info[] = $this->handle_file_upload(
-			$upload['tmp_name'],
-			isset($_SERVER['HTTP_X_FILE_NAME']) ?
-			$_SERVER['HTTP_X_FILE_NAME'] : $upload['name'],
-			isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-			$_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'],
-			isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-			$_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'],
-			$upload['error']
+					$upload['tmp_name'],
+					isset($_SERVER['HTTP_X_FILE_NAME']) ?
+					$_SERVER['HTTP_X_FILE_NAME'] : $upload['name'],
+					isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+					$_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'],
+					isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+					$_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'],
+					$upload['error']
 			);
 		}
+		
 		header('Vary: Accept');
 		if (isset($_SERVER['HTTP_ACCEPT']) &&
-		(strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+				(strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
 			header('Content-type: application/json');
 		} else {
 			header('Content-type: text/plain');
 		}
+		
 		echo json_encode($info);
 	}
 
@@ -326,7 +341,7 @@ class UploadHandler
 			foreach($this->options['image_versions'] as $version => $options) {
 				$file = $options['upload_dir'].$file_name;
 				if (is_file($file)) {
-					unlink($file);
+					//unlink($file);
 				}
 			}
 		}
@@ -342,7 +357,7 @@ header('Cache-Control: private, no-cache');
 header('Content-Disposition: inline; filename="files.json"');
 header('X-Content-Type-Options: nosniff');
 
-if (isset($_SESSION['uploadToken'])){
+if (isset($_SESSION['lamafsuser'])){
 	switch ($_SERVER['REQUEST_METHOD']) {
 		case 'HEAD':
 		case 'GET':

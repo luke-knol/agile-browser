@@ -1,6 +1,6 @@
 function session_check(sessionChecker, uploadRunning){
     Ext.Ajax.request({
-        url: 'classes/php/auth.php',
+        url: 'classes/php/lamaApi.php',
         method: 'POST',
         params: {
             clientRequest: true,
@@ -106,7 +106,7 @@ function session_check(sessionChecker, uploadRunning){
 
 function session_logout(){
     Ext.Ajax.request({
-        url: 'classes/php/auth.php',
+        url: 'classes/php/lamaApi.php',
         method: 'POST',
         params: {
             logout: true

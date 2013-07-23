@@ -103,16 +103,24 @@
                         };
                         if (file.error) {
                             that._adjustMaxNumberOfFiles(1);
-                        }
-                        $(this).fadeOut(function(){
-                            that._renderDownload([file]).css('display', 'none').replaceAll(this).fadeIn(function(){
-                                // Fix for IE7 and lower:
-                                $(this).show();
-                                $(this).fadeOut(function(){
-                                    $(this).remove();
+                            $(this).fadeOut(1000, function(){
+                                that._renderDownload([file]).css('display', 'none').replaceAll(this).fadeIn(function(){
+                                    // Fix for IE7 and lower:
+                                    $(this).show();                                    
                                 });
                             });
-                        });                        
+                        }
+                        else {
+                            $(this).fadeOut(1000, function(){
+                                that._renderDownload([file]).css('display', 'none').replaceAll(this).fadeIn(function(){
+                                    // Fix for IE7 and lower:
+                                    $(this).show();
+                                    $(this).fadeOut(1000, function(){
+                                        $(this).remove();
+                                    });
+                                });
+                            });
+                        }
                     });
                 }
                 else {

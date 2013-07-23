@@ -13,7 +13,7 @@ function Uploader(){
             'use strict';
             // Initialize the jQuery File Upload widget:
             $('#fileupload').fileupload({
-                dropZone: $('#fileupload'),
+                dropZone: $('#fileupload'),                
                 formData: {
                     filePath: '/'
                 }
@@ -98,19 +98,18 @@ function Uploader(){
                                 if (recIndex >= 0) {
                                     if (data.textStatus == 'success') {
                                         var rec = fileSystem.store.getAt(recIndex);
-                                        if (rec) {
-                                            var username = currentUser.indexOf('@');
-                                            username = currentUser.slice(0, username);
+                                        if (rec) {                                            
                                             var currentPath = self.currentPath;
                                             if (currentPath == '/' || currentPath == '//') {
                                                 currentPath = '';
                                             }
-                                            var mapperUrl = 'http://global.mt.lldns.net/llnw/staff/' + username + currentPath + '/' + record.get('name');
+                                            var mapperUrl = 'http://global.mt.lldns.net/' + pathPrefix + '/' + record.get('name');
                                             var currentTime = new Date();
                                             rec.set('mtime', currentTime.format("UTC:mmm dd yyyy HH:MM:ss"));
                                             rec.set('mapperUrl', mapperUrl);
                                             rec.commit();
-                                            fileSystem.fileGrid.getView().refresh();
+                                            //fileSystem.fileGrid.getView().refresh();
+                                            fileSystem.store.reload();
                                         }
                                     }
                                     else {
@@ -130,6 +129,33 @@ function Uploader(){
             
             
             $('#fileupload').bind('fileuploaddrop', function(e, data){
+				var returnFalse = false;			
+                $.each(data.files, function(index, file){
+                    if (file.size > 104857600) {
+                        new Ext.Window({
+                            title: 'Notice',
+                            padding: 10,
+                            closeble: false,
+                            shadow: false,
+                            html: "<div style='font-size: 12px;'>Drag and drop support is limited to files less than 100MB in size. Please select '+ Add Files...' <div>",
+                            listeners: {
+                                afterrender: function(thisWindow){
+                                    var win = thisWindow.getEl();
+                                    win.pause(6).puff('t', {
+                                        easing: 'easeOut',
+                                        duration: 0.5,
+                                        remove: true
+                                    });
+                                }
+                            }
+                        }).show();
+                        returnFalse = true;						
+						return false;
+                    }
+				});
+				if (returnFalse){
+					return false;
+				}
                 if (self.uploadMode == 'zip') {
                     if (self.uploadRunning == true) {
                         new Ext.Window({
@@ -154,8 +180,8 @@ function Uploader(){
                 }
             });
             
-            $('#fileupload').bind('fileuploadadd', function(e, data){
-                if (self.uploadMode == 'zip') {                    
+            $('#fileupload').bind('fileuploadadd', function(e, data){            	
+                if (self.uploadMode == 'zip') {
                     var size = 0;
                     $.each(data.files, function(index, file){
                         size = size + file.size;
@@ -177,7 +203,7 @@ function Uploader(){
                     fileSystem.store.insert(0, upRec);
                 }
                 else {
-                    $.each(data.files, function(index, file){
+                    $.each(data.files, function(index, file){                    	
                         var upRec = new Ext.data.Record({});
                         upRec.set('size', file.size);
                         upRec.set('name', file.name);
@@ -194,8 +220,8 @@ function Uploader(){
                         fileSystem.ProgressStore.add(upRec);
                         fileSystem.store.insert(0, upRec);
                     });
-                }
-            });
+                }                
+            });            
             
             // Open download dialogs via iframes,
             // to prevent aborting current uploads:

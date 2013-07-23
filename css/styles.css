@@ -31,8 +31,7 @@ body {
 }
 
 .logo {
-	/*replace with your logo, ideal dimensions 300x100, transparent background*/
-    background: url(../resources/images/cloud_service_logo.png);
+	/*replace with your logo, ideal dimensions 300x100, transparent background*/    
     position: absolute;
     right: 0px;
     background-size: 300px 100px;
@@ -45,13 +44,14 @@ body {
 
 .fileupload-content .ui-progressbar-value {
 	/*optional prgress bar colors*/
-    background: url(../libs/jquery/ux/css/bigprogress_green.gif);
-	/*background: url(../libs/jquery/ux/css/bigprogress_blue.gif);*/
-	/*background: url(../libs/jquery/ux/css/bigprogress_gray.gif);*/
+    background: url(../libs/jquery/ux/css/bigprogress_green.gif) !important;
+	/*background: url(../libs/jquery/ux/css/bigprogress_blue.gif) !important;*/
+	/*background: url(../libs/jquery/ux/css/bigprogress_gray.gif) !important;*/
 }
 
-.header {    
-    background-image: url(../resources/images/banner.png);
+#header {
+	/*background-image: url(../resources/images/uol_banner.png);*/
+    background-image: url(../resources/images/llnw_banner_cloud_storage.png);
     background-position: right;
     background-repeat: no-repeat;
     background-color: #666;

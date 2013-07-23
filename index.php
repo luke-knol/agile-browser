@@ -15,9 +15,9 @@ if ($_SERVER["SERVER_PORT"] == "80") {
 	header( 'Location: https://'.$_SERVER["SERVER_NAME"].$path);
 
 }
-require('classes/php/auth.php');
+require('classes/php/lamaApi.php');
 session_check();
-if (isset($_SESSION['uploadToken'])){
+if (isset($_SESSION['lamafsuser'])){
 	require('smarty/smarty_ext_template.php');
 	$smarty = new Smarty_Ext();
 	//define user required scripts here
@@ -35,7 +35,8 @@ if (isset($_SESSION['uploadToken'])){
 	'libs/ext/ux/PagingTreeLoader.js',
 	'libs/ext/ux/GroupSummary.js',
 	'libs/ext/ux/FileUploadField.js',	
-	'libs/ext/ux/RowEditor.js',	 
+	'libs/ext/ux/RowEditor.js',
+	'libs/ext/ux/livegrid/livegrid-all-debug.js', 
 	'classes/js/util/util.js',
 	'classes/js/util/ajax_helper.js',
 	'classes/js/util/array_helper.js',
@@ -51,20 +52,17 @@ if (isset($_SESSION['uploadToken'])){
 	$smarty->assign('script_list', $scripts);
 	$smarty->assign('styles_list', $styles);
 	$smarty->display('ext_header.tpl');
-	$_SESSION['envPrefix'] = dirname(__FILE__).'/';
-	if(isset($_SESSION['username'])){
-		echo '<script>var currentUser="'.$_SESSION['username'].'";</script>';
+	if(isset($_SESSION['lamafsuser'])){
+		echo '<script>var currentUser="'.$_SESSION['lamafsuser'].'"; var pathPrefix = "'.$_SESSION['pathprefix'].'"</script>';
 	}
 	?>
 
-
-
-<script type="text/javascript">
+		<script type="text/javascript">
 	        Ext.onReady(function(){			
 				onReady();
-        	});         
-</script>
-
+        	});
+         
+        </script>
 	<?
 	$smarty->display('footer.tpl');
 }

@@ -23,8 +23,7 @@
 {/foreach}
 </head>
 <body>
-<div class="header">
-  <div class="logo"></div>
+<div id="header">
 </div>
 <div id="loading-mask"></div>
 <div id="loading"><span id="loading-message">Loading. Please wait...</span>

@@ -33,7 +33,6 @@ if (!is_null($action) && !is_null($reqObject)){
 }
 
 class ReqHandler{
-
 	
 	private $opt;
 
@@ -47,12 +46,8 @@ class ReqHandler{
 	function filesystem($action){
 		renew_timer();
 		$allowedActions = array(
-			'directory',
-			'directories', 
-			'createDirectory',
-			'pops', 
-			'policies',
-			'policyPops', 
+			'directory',			
+			'createDirectory',			 
 		    'deleteDirectory',
 			'shareUrls',
 		    'mapper',
@@ -62,11 +57,8 @@ class ReqHandler{
 			'paste',
 			'rename', 
 			'file',
-			'makeZip',
-			'files',
-			'playlist',			
-			'fileBricks',
-			'filePops',
+			'makeZip',			
+			'playlist',						
 			'listDirectories',
 			'listFiles');		
 		if(!in_array($action, $allowedActions)){
@@ -85,20 +77,11 @@ class ReqHandler{
 				$dir = $fs->GetDirectory($path);
 				echo json_encode($dir);
 				break;
-			case 'directories':
-				$limit = $_REQUEST['limit'];
-				$cookie = $_REQUEST['cookie'];
-				$path = $_REQUEST['path'];
-				$path = urlencode($path);
-				$dirs = $fs->ListDirectories('/', $limit, $cookie);
-				echo json_encode($dirs);
-				break;
 			case 'createDirectory':
 				$name = $_REQUEST['dirName'];
 				$path = $_REQUEST['path'];
-				$gid = $_REQUEST['gid'];
-				$policyID = isset($_REQUEST['pid']) ? $_REQUEST['pid'] : null;
-				$response = $fs->CreateDirectory($gid, $name, $path, $policyID);
+				$gid = (int)$_REQUEST['gid'];				
+				$response = $fs->CreateDirectory($gid, $name, $path);
 				echo json_encode($response);
 				break;
 			case 'deleteDirectory':
@@ -110,16 +93,7 @@ class ReqHandler{
 				$path =	isset($_REQUEST['path']) ? $_REQUEST['path'] : null;
 				$response = $fs->DeleteFile($path);
 				echo json_encode($response);
-				break;
-			case 'policies':
-				$response = $fs->ListPolicies();
-				echo json_encode($response);
-				break;
-			case 'policyPops':
-				$name = $_REQUEST['name'];
-				$response = $fs->ListPolicyPops($name);
-				echo json_encode($response);
-				break;
+				break;			
 			case 'deleteFiles':
 				$files =	isset($_REQUEST['files']) ? $_REQUEST['files'] : null;
 				$files = stripslashes($files);
@@ -185,17 +159,7 @@ class ReqHandler{
 				$path = $_REQUEST['path'];
 				$response = $fs->MakePlaylist($path, $files);
 				echo json_encode($response);
-				break;
-			case 'file':
-				$path = $_REQUEST['path'];
-				$gid = $_REQUEST['gid'];
-				$fileID = isset($_REQUEST['fileID']) ? $_REQUEST['fileID'] : null;
-				if($fileID == ''){
-					$fileID = null;
-				}
-				$file = $fs->GetFile($gid, $path, $fileID);
-				echo json_encode($file);
-				break;
+				break;			
 			case 'mapper':
 				$path = $_REQUEST['path'];
 				$mapper = $fs->GetMapperUrl($path);
@@ -206,26 +170,7 @@ class ReqHandler{
 				$fileName = stripcslashes($_REQUEST['downloadPath']);
 				$urls = $fs->GetShareUrls($path, $fileName);
 				echo json_encode($urls);
-				break;
-			case 'files':
-				$limit = $_REQUEST['limit'];
-				$cookie = $_REQUEST['cookie'];
-				$path = $_REQUEST['path'];
-				$path = urlencode($path);
-				$dirID = isset($_REQUEST['dirID']) ? $_REQUEST['dirID'] : null;
-				$files = $fs->ListFiles($path, $dirID, $limit, $cookie);
-				echo json_encode($files);
-				break;
-			case 'filePops':
-				$path = $_REQUEST['path'];
-				$path = urlencode($path);
-				$fileID = isset($_REQUEST['fileID']) ? $_REQUEST['fileID'] : null;
-				if($fileID == ''){
-					$fileID = null;
-				}
-				$pops = $fs->GetFilePops($path, $fileID);
-				echo json_encode($pops);
-				break;
+				break;			
 			case 'list':
 				$limit = 1000;
 				$directoryCookieStart = $_REQUEST['dirCookie'];
@@ -265,6 +210,7 @@ class ReqHandler{
 				$directoryCookieStart = $_REQUEST['dirCookie'];
 				$dirCookieEnd = null;
 				$path = isset($_REQUEST['path']) ? $_REQUEST['path']: '/';
+				//$path = urlencode($path);
 				$dirs = $fs->ListDirectories($path, $dirID, $limit, $directoryCookie);
 				$dirCount = count($dirs['directories']);
 				echo json_encode($dirs);
@@ -275,17 +221,12 @@ class ReqHandler{
 				$files = $fs->ListFiles($path, $limit);
 				echo json_encode($files);
 				break;
-			case 'pops':
-				$pops = $fs->ListDataCenters();
-				echo json_encode($pops);
-				break;
 		}
 	}
 
 	function email($action){
 		renew_timer();
-		$allowedActions = array(
-			'find',
+		$allowedActions = array(			
 			'send');		
 		if(!in_array($action, $allowedActions)){
 			$response = array(
@@ -295,17 +236,16 @@ class ReqHandler{
 					echo json_encode($response);
 					return;
 		}
-		switch($action){							
+		switch($action){
 			case 'send':
 				$to = $_REQUEST['emailAddr'];
-				$from = $_REQUEST['from'];
 				$msg = isset($_REQUEST['msgBody']) ? stripcslashes($_REQUEST['msgBody']) : '';
 				$mapperUrl = stripcslashes($_REQUEST['mapperUrl']);
 				$tinyUrl = $_REQUEST['tinyUrl'];
 				$fileName = stripcslashes($_REQUEST['fileName']);
 				$linkPick = $_REQUEST['rbShare'];
 				$mail = new SendMail();
-				$resp = $mail->Send($to, $from, $fileName, $msg, $mapperUrl, $tinyUrl, $linkPick);
+				$resp = $mail->Send($to, $fileName, $msg, $mapperUrl, $tinyUrl, $linkPick);
 				echo json_encode($resp);
 				break;
 		}

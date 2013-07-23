@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.18, created on 2012-03-20 02:23:51
+<?php /* Smarty version 2.6.18, created on 2011-10-28 00:24:23
          compiled from ext_header.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('modifier', 'default', 'ext_header.tpl', 5, false),)), $this); ?>
@@ -31,8 +31,7 @@ smarty_core_load_plugins(array('plugins' => array(array('modifier', 'default', '
 <?php endforeach; endif; unset($_from); ?>
 </head>
 <body>
-<div class="header">
-  <div class="logo"></div>
+<div id="header">
 </div>
 <div id="loading-mask"></div>
 <div id="loading"><span id="loading-message">Loading. Please wait...</span>

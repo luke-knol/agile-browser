@@ -61,10 +61,12 @@ class jsonRPCClient {
 	 * @param string $url
 	 * @param boolean $debug
 	 */
-	public function __construct($url,$debug = false) {
+	public function __construct($url, $token=null, $debug=false) {
 		// server URL
 		$this->url = $url;
-		// proxy
+		//token
+		$this->token = $token;
+		// proxy		
 		empty($proxy) ? $this->proxy = '' : $this->proxy = $proxy;
 		// debug state
 		empty($debug) ? $this->debug = false : $this->debug = true;
@@ -101,6 +103,10 @@ class jsonRPCClient {
 		// check
 		if (is_array($params)) {
 			// no keys
+			if (isset($this->token)){
+				$tokenArray = array($this->token);
+				$params = array_merge($tokenArray, $params);
+			}
 			$params = array_values($params);
 		} else {
 			throw new Exception('Params must be given as array');
@@ -119,7 +125,7 @@ class jsonRPCClient {
 						'params' => $params,
 						'id' => $currentId
 		);
-		$request = json_encode($request);		
+		$request = json_encode($request);
 		$this->debug && $this->debug.='***** Request *****'."\n".$request."\n".'***** End Of request *****'."\n\n";
 
 		// performs the HTTP POST
@@ -160,9 +166,9 @@ class jsonRPCClient {
 			if (!is_null($response['error'])) {
 				throw new Exception(json_encode($response['error']));
 			}
-				
+
 			return $response['result'];
-				
+
 		} else {
 			return true;
 		}
