@@ -28,10 +28,19 @@ Configuration:
     Config file help:
 
         Inspect browser_config.xml located in the root dir.
-        The pathPrefix tag indicates what the root directory should be for the targeted Agile customer users.
-        if %username is left in the path string it will be replaced with the username of the authenticating user.
-        This value needs to be properly set for the egress functions with the browser to work (preview file, download file, share links);
-        It has no impact on what files will be visible to authenticate users, or on uploaded content!
+
+        Authors Note: I realize egress path configuration currently requires a lot of micromanagement and it cumbersome, this will no longer be necessary in the next release of the API.
+
+        - pathPrefix tag:
+
+            The pathPrefix tag indicates what the root directory should be for the targeted Agile customer
+            if %username is left in the path string it will be replaced with the username of the authenticating user.
+            This value needs to be properly set for the egress functions with the browser to work (preview file, download file, share links);
+            It has no impact on what files will be visible to authenticate users, or on uploaded content!
+
+        - userPrefix tag:
+
+            The userPrefix tags supercede the pathPrefix tag allowing the site maintainer to specify the "restricted" directory assigned to specific users
 
         Example use-case:
 
@@ -44,7 +53,25 @@ Configuration:
 
         <pathPrefix>/internetplus/%username</pathPrefix>
 
-        In this instance if user "bob" logs in his pathPrefix within the system will be set to /internetplus/bob once the config file has been properly modified
+        If there are edge case users who have access to all the customer's content or have a non-conventional restricted directory their path can be defined in the
+        userPath section The following example is for three users of customer internetplus, 'bob' who is a root user, 'tom' who is a generic user and 'fred' who has
+        an unconventional restricted directory.  Example config:
+
+        <agile>
+            <service>
+            ...
+                <pathPrefix>/internetplus/%username</pathPrefix>
+            ...
+            </service>
+            <userPath>
+                <bob>/internetplus<bob>
+                <fred>/internetplus/contractors/fred</fred>
+        <agile>
+
+        the resulting paths for each user upon logging in would be as follows:
+            bob: '/internetplus'
+            tom: '/internetplus/tom'
+            fred: '/internetplus/contractors/fred'
 
     Apache2 setup:
 

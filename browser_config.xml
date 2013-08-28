@@ -1,7 +1,11 @@
 <agile>
-        <service>
+       <service>
          <uploadAPI>https://global.llp.lldns.net</uploadAPI>
-         <pathPrefix>/llnw/staff/%username</pathPrefix>
          <envPrefix>/var/www/browser/</envPrefix>
-        </service>
+         <pathPrefix>/accountname/%username</pathPrefix>
+       </service>
+       <userPrefix>
+             <rootuser>/accountname</rootuser>
+             <user1>/accountname/users/user1</user1>
+       </userPrefix>
 </agile>
