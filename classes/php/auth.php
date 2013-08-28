@@ -14,23 +14,23 @@ class Auth
                 $uploadUriNodes = $obj->xpath('/agile/service/uploadAPI');
                 $envPrefixNode = $obj->xpath('/agile/service/envPrefix');
                 $pathPrefixNode = $obj->xpath('/agile/userPrefix/'.$user);
-                $this->uploadURI = (string)$uploadUriNodes[0][0];^M
+                $this->uploadURI = (string)$uploÏadUriNodes[0][0];
                 if(count($pathPrefixNode) == 1){
                         $this->pathPrefix = (string)$pathPrefixNode[0][0];
                 }
                 else{
                         $pathPrefixNode = $obj->xpath('/agile/service/pathPrefix');
                         $this->pathPrefix = (string)$pathPrefixNode[0][0];
-                        if(strpos($this->pathPrefix,'%username') >= 0){^M
-                                $this->pathPrefix = str_replace('%username', $user, $this->pathPrefix);^M
+                        if(strpos($this->pathPrefix,'%username') >= 0){
+                                $this->pathPrefix = str_replace('%username', $user, $this->pathPrefix);
                         }
                 }
-                $_SESSION['envPrefix'] = (string)$envPrefixNode[0][0];^M
-                if(substr($this->pathPrefix, -1) == '/'){^M
-                        $this->pathPrefix = rtrim($this->pathPrefix, '/');^M
+                $_SESSION['envPrefix'] = (string)$envPrefixNode[0][0];
+                if(substr($this->pathPrefix, -1) == '/'){
+                        $this->pathPrefix = rtrim($this->pathPrefix, '/');
                 }
-                $this->uploadAPI = new UploadAPI($this->uploadURI);^M
-                $r = $this->uploadAPI->login($user, $pass);^M
+                $this->uploadAPI = new UploadAPI($this->uploadURI);
+                $r = $this->uploadAPI->login($user, $pass);
                 return $r;
         }
 
@@ -38,8 +38,8 @@ class Auth
                 return $this->uploadAPI;
         }
 
-        public function GetPathPrefix(){^M
-                return $this->pathPrefix;^M
+        public function GetPathPrefix(){
+                return $this->pathPrefix;
         }
 
         public function GetUploadURI(){
