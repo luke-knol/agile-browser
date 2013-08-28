@@ -1,5 +1,7 @@
 Setup instructions:
 
+(for those wishing to just follow a set of commands please scroll to end of the file)
+
 Hosting webserver requirements:
 
     Install apache2 and the following packages:
@@ -18,7 +20,6 @@ Hosting webserver requirements:
     ii  php5-dev                             5.2.11-0.dotdeb.1          Files for PHP5 module development
     ii  php5-gd                              5.2.12-0.dotdeb.1          GD module for php5
     ii  php5-memcache                        5.2.12-0.dotdeb.1          memcache module for php5
-    ii  php5-mysql                           5.2.12-0.dotdeb.1          MySQL module for php5
 
 Configuration:
 
@@ -86,10 +87,6 @@ CSS / Branding information:
 
 
 
-
-
-
-
 Troubleshooting:
 
 Note: Unless needed for logging / debugging PHP.ini should be set to ignore NOTICE level warnings.
@@ -101,5 +98,43 @@ Permission issues
 
 Upload issues
 *Agile browser supports uploads of files up to 1gig in size.  Your PHP.ini file will need to be updated to support this functionality as well.
+
+
+Command list (intended for reference only)
+
+#dep install command list:
+sudo apt-get update
+sudo apt-get install zip unzip p7zip p7zip-full
+sudo apt-get install libapache2-mod-php5 php-apc php-pear
+sudo apt-get install php5 php5-cli php5-common php5-curl php5-dev php5-gd php5-memcache
+
+#fetch / install source code command list:
+cd ~
+wget https://github.com/luke-knol/agile-browser/archive/master.zip
+unzip master.zip
+cd agile-browser-master
+#edit browser_config using the aforementioned instructions
+sudo mkdir /etc/lama
+sudo mv ./browser_config.xml /etc/lama
+sudo mkdir /var/www/browser
+sudo cp -a -r ./* /var/www/browser
+sudo mkdir /var/www/browser/uploads
+sudo chown www-data:www-data /var/www/browser/uploads
+sudo chown -R www-data:www-data /var/www/browser/smarty/template*
+
+
+#apache setup command list:
+sudo a2enmod ssl
+sudo mkdir /etc/apache2/ssl
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
+#fill out prompts
+#edit /etc/apache2/sites-available/default-ssl to reference ssl files just created change site root and directory tag to /var/www/browser (site root)
+#edit /etc/apache2/sites-available/default DocumentRoot and Document to /var/www/browser (site root)
+#update /etc/php5/apache2/php.ini with aforementioned config values
+#enable sites
+sudo a2ensite default
+sudo a2ensite default-ssl
+#restart apache2
+sudo /etc/init.d/apache2 restart
 
 

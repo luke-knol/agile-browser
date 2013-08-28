@@ -1,7 +1,7 @@
 <agile>
         <service>
-         <uploadAPI>https://llp-07.phx2.lldns.net</uploadAPI>
+         <uploadAPI>https://global.llp.lldns.net</uploadAPI>
          <pathPrefix>/llnw/staff/%username</pathPrefix>
-	 <envPrefix>/home/lknol/llnw-src/agile-browser/</envPrefix>
+         <envPrefix>/var/www/browser/</envPrefix>
         </service>
 </agile>
