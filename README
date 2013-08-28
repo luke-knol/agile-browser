@@ -113,9 +113,9 @@ cd ~
 wget https://github.com/luke-knol/agile-browser/archive/master.zip
 unzip master.zip
 cd agile-browser-master
-#edit browser_config using the aforementioned instructions
-sudo mkdir /etc/lama
-sudo mv ./browser_config.xml /etc/lama
+#edit browser_config.xml using the aforementioned instructions
+sudo mkdir /etc/agile
+sudo mv ./browser_config.xml /etc/agile
 sudo mkdir /var/www/browser
 sudo cp -a -r ./* /var/www/browser
 sudo mkdir /var/www/browser/uploads
