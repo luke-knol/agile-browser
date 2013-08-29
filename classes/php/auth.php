@@ -14,7 +14,7 @@ class Auth
                 $uploadUriNodes = $obj->xpath('/agile/service/uploadAPI');
                 $envPrefixNode = $obj->xpath('/agile/service/envPrefix');
                 $pathPrefixNode = $obj->xpath('/agile/userPrefix/'.$user);
-                $this->uploadURI = (string)$uploÏadUriNodes[0][0];
+                $this->uploadURI = (string)$uploadUriNodes[0][0];
                 if(count($pathPrefixNode) == 1){
                         $this->pathPrefix = (string)$pathPrefixNode[0][0];
                 }
