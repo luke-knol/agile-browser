@@ -29,7 +29,9 @@ class UploadAPI {
 			return 0;
 		}
 
-		$r = $this->client->login($this->userid, $this->passwd);
+		$r = $this->client->login($this->userid, $this->passwd, true);
+		$egress_path_prefix = $r[1]['path'];		
+		$_SESSION['pathprefix'] = $egress_path_prefix;
 		$this->token = $r[0];
 		$_SESSION['uploadToken'] = $r[0];
 		$this->user = $r[1];

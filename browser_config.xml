@@ -2,10 +2,5 @@
        <service>
          <uploadAPI>https://global.llp.lldns.net</uploadAPI>
          <envPrefix>/var/www/browser/</envPrefix>
-         <pathPrefix>/accountname/%username</pathPrefix>
        </service>
-       <userPrefix>
-             <rootuser>/accountname</rootuser>
-             <user1>/accountname/users/user1</user1>
-       </userPrefix>
 </agile>
